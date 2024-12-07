@@ -24,6 +24,10 @@ const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps)
       mb={4}
       bg={colorMode === 'dark' ? 'gray.700' : 'white'}
       borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.200'}
+      width="100%"
+      maxWidth="100%"
+      overflow="hidden"
+      wordBreak="break-word"
     >
       <Flex justify="space-between" align="center" mb={4}>
         <Badge colorScheme={statusConfig[status].color}>
@@ -33,7 +37,27 @@ const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps)
           {new Date(timestamp).toLocaleString()}
         </Text>
       </Flex>
-      <Box color={colorMode === 'dark' ? 'gray.100' : 'gray.800'} px={2}>
+      <Box 
+        color={colorMode === 'dark' ? 'gray.100' : 'gray.800'} 
+        px={2}
+        sx={{
+          '& > div': {
+            width: '100%',
+            maxWidth: '100%',
+            overflow: 'hidden',
+            wordWrap: 'break-word',
+          },
+          '& pre': {
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            maxWidth: '100%',
+          },
+          '& code': {
+            wordBreak: 'break-all',
+            whiteSpace: 'pre-wrap',
+          }
+        }}
+      >
         <MarkdownRenderer content={content} />
       </Box>
     </Box>
