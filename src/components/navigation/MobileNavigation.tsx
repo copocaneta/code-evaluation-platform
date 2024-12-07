@@ -47,7 +47,7 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => {
                   color={colorMode === 'dark' ? 'white' : 'gray.800'}
                 >
                   <VStack align="flex-start" spacing="1">
-                    <Text>{challenge.label}</Text>
+                    <Text>{challenge.title}</Text>
                     {challenge.difficulty && (
                       <Badge size="sm" colorScheme={getDifficultyColor(challenge.difficulty)}>
                         {challenge.difficulty}

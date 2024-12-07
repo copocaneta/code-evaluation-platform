@@ -50,7 +50,7 @@ const ChallengeTabs = () => {
             onClick={() => setActiveChallenge(challenge.id)}
             position="relative"
           >
-            <Text>{challenge.label}</Text>
+            <Text>{challenge.title}</Text>
             {challenge.difficulty && (
               <Text
                 as="span"

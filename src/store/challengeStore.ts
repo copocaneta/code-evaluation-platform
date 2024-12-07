@@ -1,44 +1,26 @@
 import { create } from 'zustand';
-import { Challenge } from '../types/state';
-
-const defaultChallenges: Challenge[] = [
-  {
-    id: 'basic',
-    label: 'Basic',
-    description: 'Write a function that returns "Hello, World!"',
-    difficulty: 'basic',
-    defaultLanguage: 'javascript',
-    defaultCode: 'function helloWorld() {\n  // Your code here\n}',
-  },
-  {
-    id: 'intermediate',
-    label: 'Intermediate',
-    description: 'Create a function that reverses a string',
-    difficulty: 'intermediate',
-    defaultLanguage: 'javascript',
-    defaultCode: 'function reverseString(str) {\n  // Your code here\n}',
-  },
-  {
-    id: 'advanced',
-    label: 'Advanced',
-    description: 'Implement a binary search tree',
-    difficulty: 'advanced',
-    defaultLanguage: 'typescript',
-    defaultCode: 'class BinarySearchTree {\n  // Your code here\n}',
-  },
-];
+import { Challenge } from '../types/challenge';
+import { challengeLoader } from '../services/challengeLoader';
 
 interface ChallengeStore {
   challenges: Challenge[];
   activeChallenge: Challenge | null;
   setActiveChallenge: (challengeId: string) => void;
+  loadChallenges: () => void;
 }
 
 export const useChallengeStore = create<ChallengeStore>((set) => ({
-  challenges: defaultChallenges,
-  activeChallenge: defaultChallenges[0],
+  challenges: [],
+  activeChallenge: null,
   setActiveChallenge: (challengeId) =>
     set((state) => ({
       activeChallenge: state.challenges.find((c) => c.id === challengeId) || state.activeChallenge,
     })),
+  loadChallenges: () => {
+    const challenges = challengeLoader.getChallenges();
+    set({
+      challenges,
+      activeChallenge: challenges[0] || null,
+    });
+  },
 })); 
