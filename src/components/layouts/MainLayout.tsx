@@ -1,19 +1,19 @@
-import { Box, Container } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import Header from '../Header';
+import { useChallengeStore } from '../../store/challengeStore';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
+const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const loadChallenges = useChallengeStore((state) => state.loadChallenges);
 
-const MainLayout = ({ children }: MainLayoutProps) => {
+  useEffect(() => {
+    loadChallenges();
+  }, [loadChallenges]);
+
   return (
-    <Box minH="100vh">
+    <Box minH="100vh" pt="64px">
       <Header />
-      <Box as="main" minH="90vh" pt="64px">
-        <Container maxW="container.xl" py="base">
-          {children}
-        </Container>
-      </Box>
+      <Box p="base">{children}</Box>
     </Box>
   );
 };
