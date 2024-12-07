@@ -37,8 +37,16 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
   const handleColorModeChange = (mode: 'light' | 'dark' | 'system') => {
     setTheme({ colorMode: mode });
     if (mode === 'system') {
-      const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      const systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
+      const systemMode = systemPreference.matches ? 'dark' : 'light';
       setColorMode(systemMode);
+      
+      // Add listener for system preference changes
+      const handleChange = (e: MediaQueryListEvent) => {
+        setColorMode(e.matches ? 'dark' : 'light');
+      };
+      systemPreference.addEventListener('change', handleChange);
+      return () => systemPreference.removeEventListener('change', handleChange);
     } else {
       setColorMode(mode);
     }

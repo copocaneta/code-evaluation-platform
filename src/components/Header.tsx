@@ -41,6 +41,11 @@ const Header = () => {
             icon={<FiSettings />}
             variant="ghost"
             onClick={onOpen}
+            color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
+            _hover={{
+              bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
+              color: colorMode === 'dark' ? 'white' : 'gray.800',
+            }}
           />
         </Flex>
       </Container>

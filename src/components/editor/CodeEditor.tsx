@@ -2,6 +2,7 @@ import { Box } from '@chakra-ui/react';
 import Editor from '@monaco-editor/react';
 import { useCallback } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useColorMode } from '@chakra-ui/react';
 
 interface CodeEditorProps {
   value: string;
@@ -11,6 +12,9 @@ interface CodeEditorProps {
 
 const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProps) => {
   const { editor, theme } = useSettingsStore();
+  const { colorMode } = useColorMode();
+
+  const editorTheme = colorMode === 'dark' ? 'vs-dark' : 'vs-light';
 
   const handleEditorChange = useCallback(
     (value: string | undefined) => {
@@ -26,7 +30,7 @@ const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProp
         defaultLanguage={language}
         value={value}
         onChange={handleEditorChange}
-        theme={theme.colorMode === 'dark' ? 'vs-dark' : 'vs-light'}
+        theme={editorTheme}
         options={{
           minimap: { enabled: editor.showMinimap },
           fontSize: theme.fontSize,
