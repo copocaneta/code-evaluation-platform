@@ -44,7 +44,7 @@ A modern web application for coding challenges with real-time AI evaluation usin
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/code-evaluation-platform.git
+git clone git@github.com:copocaneta/code-evaluation-platform.git
 cd code-evaluation-platform
 ```
 
