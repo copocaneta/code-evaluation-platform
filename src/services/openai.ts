@@ -15,41 +15,25 @@ export class OpenAIService {
 
   async evaluateCode(code: string, language: string, systemPrompt: string): Promise<EvaluationResult> {
     try {
-      const response = await fetch(this.endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': this.apiKey,
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: 'system',
-              content: systemPrompt,
-            },
-            {
-              role: 'user',
-              content: `Please evaluate this ${language} code:\n\n${code}`,
-            },
-          ],
-          temperature: 0.7,
-        }),
-      });
+      // First call for detailed evaluation
+      const evaluationResponse = await this.makeOpenAIRequest(
+        systemPrompt,
+        `Please evaluate this ${language} code:\n\n${code}`
+      );
 
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
-      }
+      // Second call specifically for pass/fail status
+      const statusResponse = await this.makeOpenAIRequest(
+        "You are a code validator. Respond with ONLY 'PASS' or 'FAIL'. Pass means the code fully meets requirements, Fail means it doesn't.",
+        `Does this code meet the requirements?\nRequirements: ${systemPrompt}\nCode:\n${code}`
+      );
 
-      const data = await response.json();
-      const content = data.choices[0].message.content;
-
-      const status = this.determineEvaluationStatus(content);
+      const status = this.determineStatus(statusResponse.choices[0].message.content);
 
       return {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
         status,
-        content,
+        content: evaluationResponse.choices[0].message.content,
       };
     } catch (error) {
       return {
@@ -61,22 +45,31 @@ export class OpenAIService {
     }
   }
 
-  private determineEvaluationStatus(content: string): 'success' | 'error' | 'warning' {
-    const lowerContent = content.toLowerCase();
-    
-    if (lowerContent.includes('fails') || 
-        lowerContent.includes('incorrect') || 
-        lowerContent.includes('error') || 
-        lowerContent.includes('does not pass')) {
-      return 'error';
+  private async makeOpenAIRequest(systemPrompt: string, userPrompt: string) {
+    const response = await fetch(this.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': this.apiKey,
+      },
+      body: JSON.stringify({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.statusText}`);
     }
-    
-    if (lowerContent.includes('could be improved') || 
-        lowerContent.includes('suggestion') || 
-        lowerContent.includes('consider')) {
-      return 'warning';
-    }
-    
-    return 'success';
+
+    return await response.json();
+  }
+
+  private determineStatus(statusResponse: string): 'success' | 'error' | 'warning' {
+    const normalizedResponse = statusResponse.trim().toUpperCase();
+    return normalizedResponse === 'PASS' ? 'success' : 'error';
   }
 } 
