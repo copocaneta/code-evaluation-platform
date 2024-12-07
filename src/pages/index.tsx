@@ -1,9 +1,10 @@
-import { Box, Grid, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Grid, useBreakpointValue, useColorMode } from '@chakra-ui/react';
 import CodeInputPanel from '../components/editor/CodeInputPanel';
 import EvaluationPanel from '../components/evaluation/EvaluationPanel';
 
 export default function Home() {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const { colorMode } = useColorMode();
 
   return (
     <Grid
@@ -12,7 +13,7 @@ export default function Home() {
       minH="calc(90vh - 64px)"
     >
       <Box
-        bg="white"
+        bg={colorMode === 'dark' ? 'gray.700' : 'white'}
         p="base"
         borderRadius="md"
         boxShadow="sm"
@@ -22,7 +23,7 @@ export default function Home() {
         <CodeInputPanel />
       </Box>
       <Box
-        bg="white"
+        bg={colorMode === 'dark' ? 'gray.700' : 'white'}
         p="base"
         borderRadius="md"
         boxShadow="sm"
