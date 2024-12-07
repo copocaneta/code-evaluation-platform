@@ -2,8 +2,6 @@ import { Flex, Button, useColorMode, Box, Text, useBreakpointValue } from '@chak
 import { useChallengeStore } from '../../store/challengeStore';
 import { motion } from 'framer-motion';
 
-const MotionBox = motion(Box);
-
 const ChallengeTabs = () => {
   const { challenges, activeChallenge, setActiveChallenge } = useChallengeStore();
   const { colorMode } = useColorMode();
@@ -45,6 +43,10 @@ const ChallengeTabs = () => {
               bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
               color: colorMode === 'dark' ? 'white' : 'gray.800',
             }}
+            _focus={{
+              boxShadow: 'none',
+              outline: 'none',
+            }}
             onClick={() => setActiveChallenge(challenge.id)}
             position="relative"
           >
@@ -61,14 +63,16 @@ const ChallengeTabs = () => {
             )}
           </Button>
           {activeChallenge?.id === challenge.id && (
-            <MotionBox
+            <motion.div
               layoutId="activeTab"
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              height="2px"
-              bg="brand.500"
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: '2px',
+                background: 'var(--chakra-colors-brand-500)',
+              }}
               initial={false}
             />
           )}
