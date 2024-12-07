@@ -6,21 +6,17 @@ interface EvaluationStore {
   isLoading: boolean;
   error: string | null;
   addResult: (result: EvaluationResult) => void;
-  setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
   clearResults: () => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
 }
 
 export const useEvaluationStore = create<EvaluationStore>((set) => ({
   results: [],
   isLoading: false,
   error: null,
-  addResult: (result) =>
-    set((state) => ({
-      results: [result, ...state.results],
-      error: null,
-    })),
-  setLoading: (isLoading) => set({ isLoading }),
+  addResult: (result) => set((state) => ({ results: [result, ...state.results] })),
+  clearResults: () => set({ results: [] }),
+  setLoading: (loading) => set({ isLoading: loading }),
   setError: (error) => set({ error }),
-  clearResults: () => set({ results: [], error: null }),
 })); 

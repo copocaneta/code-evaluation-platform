@@ -41,12 +41,15 @@ export class OpenAIService {
       }
 
       const data = await response.json();
+      const content = data.choices[0].message.content;
+
+      const status = this.determineEvaluationStatus(content);
 
       return {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
-        status: 'success',
-        content: data.choices[0].message.content,
+        status,
+        content,
       };
     } catch (error) {
       return {
@@ -56,5 +59,24 @@ export class OpenAIService {
         content: error instanceof Error ? error.message : 'An unknown error occurred',
       };
     }
+  }
+
+  private determineEvaluationStatus(content: string): 'success' | 'error' | 'warning' {
+    const lowerContent = content.toLowerCase();
+    
+    if (lowerContent.includes('fails') || 
+        lowerContent.includes('incorrect') || 
+        lowerContent.includes('error') || 
+        lowerContent.includes('does not pass')) {
+      return 'error';
+    }
+    
+    if (lowerContent.includes('could be improved') || 
+        lowerContent.includes('suggestion') || 
+        lowerContent.includes('consider')) {
+      return 'warning';
+    }
+    
+    return 'success';
   }
 } 
