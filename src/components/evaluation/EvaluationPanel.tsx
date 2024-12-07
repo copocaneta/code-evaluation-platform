@@ -6,7 +6,7 @@ const EvaluationPanel = () => {
   const { results, isLoading } = useEvaluationStore();
 
   return (
-    <VStack height="100%" spacing={4} align="stretch">
+    <VStack height="100%" spacing={4} p={4}>
       <Text fontSize="lg" fontWeight="medium" color="gray.700">
         Evaluation Results
       </Text>

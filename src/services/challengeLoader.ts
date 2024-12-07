@@ -9,17 +9,12 @@ class ChallengeLoader {
   }
 
   private validateChallengeData(data: ChallengeData): ChallengeData {
-    // Validate required fields
     data.challenges.forEach((challenge) => {
       const requiredFields: (keyof Challenge)[] = [
         'id',
         'title',
-        'difficulty',
-        'order',
         'description',
-        'instructions',
-        'systemPrompt',
-        'tags',
+        'difficulty',
         'defaultLanguage',
         'defaultCode',
       ];
@@ -30,9 +25,6 @@ class ChallengeLoader {
         }
       });
     });
-
-    // Sort challenges by order
-    data.challenges.sort((a, b) => a.order - b.order);
 
     return data;
   }
@@ -47,12 +39,6 @@ class ChallengeLoader {
 
   public getChallengesByDifficulty(difficulty: Challenge['difficulty']): Challenge[] {
     return this.data.challenges.filter((c) => c.difficulty === difficulty);
-  }
-
-  public getChallengesByTags(tags: string[]): Challenge[] {
-    return this.data.challenges.filter((c) => 
-      tags.some((tag) => c.tags.includes(tag))
-    );
   }
 
   public getMetadata() {

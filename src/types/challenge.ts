@@ -3,14 +3,8 @@ export type Difficulty = 'basic' | 'intermediate' | 'advanced';
 export interface Challenge {
   id: string;
   title: string;
-  difficulty: Difficulty;
-  order: number;
   description: string;
-  instructions: string;
-  systemPrompt: string;
-  sampleInput?: string;
-  expectedOutput?: string;
-  tags: string[];
+  difficulty: Difficulty;
   defaultLanguage: string;
   defaultCode: string;
 }
