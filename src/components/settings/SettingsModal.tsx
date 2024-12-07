@@ -36,7 +36,12 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
   const handleColorModeChange = (mode: 'light' | 'dark' | 'system') => {
     setTheme({ colorMode: mode });
-    setColorMode(mode === 'system' ? 'light' : mode);
+    if (mode === 'system') {
+      const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      setColorMode(systemMode);
+    } else {
+      setColorMode(mode);
+    }
   };
 
   return (

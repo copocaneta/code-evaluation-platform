@@ -1,10 +1,11 @@
-import { Box, Flex, Heading, Container, IconButton, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Heading, Container, IconButton, useDisclosure, useColorMode } from '@chakra-ui/react';
 import { FiSettings } from 'react-icons/fi';
 import ChallengeTabs from './navigation/ChallengeTabs';
 import { SettingsModal } from './settings/SettingsModal';
 
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
 
   return (
     <Box
@@ -14,7 +15,7 @@ const Header = () => {
       left={0}
       right={0}
       height="64px"
-      bg="white"
+      bg={colorMode === 'dark' ? 'gray.700' : 'white'}
       boxShadow="sm"
       zIndex={10}
     >

@@ -1,17 +1,23 @@
-import { extendTheme } from '@chakra-ui/react';
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import { Button } from './components/button';
 
+const config: ThemeConfig = {
+  initialColorMode: 'system',
+  useSystemColorMode: true,
+};
+
 const theme = extendTheme({
+  config,
   styles: {
-    global: {
+    global: (props: any) => ({
       body: {
-        bg: 'gray.50',
-        color: 'gray.800',
+        bg: props.colorMode === 'dark' ? 'gray.800' : 'gray.50',
+        color: props.colorMode === 'dark' ? 'gray.100' : 'gray.800',
       },
       '*': {
         transition: 'all 0.2s ease-in-out',
       },
-    },
+    }),
   },
   colors: {
     brand: {
@@ -36,6 +42,13 @@ const theme = extendTheme({
       baseStyle: {
         maxW: 'container.xl',
       },
+    },
+    Modal: {
+      baseStyle: (props: any) => ({
+        dialog: {
+          bg: props.colorMode === 'dark' ? 'gray.700' : 'white',
+        },
+      }),
     },
   },
 });
