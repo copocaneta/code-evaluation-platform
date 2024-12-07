@@ -19,7 +19,8 @@ const MarkdownRenderer = ({ content }: MarkdownRendererProps) => {
         return (
           <code
             style={{
-              backgroundColor: colorMode === 'dark' ? '#2D3748' : '#EDF2F7',
+              backgroundColor: colorMode === 'dark' ? '#4A5568' : '#EDF2F7',
+              color: colorMode === 'dark' ? '#E2E8F0' : 'inherit',
               padding: '0.2em 0.4em',
               borderRadius: '3px',
               fontSize: '0.85em',
