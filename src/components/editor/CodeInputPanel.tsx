@@ -66,7 +66,7 @@ const CodeInputPanel = () => {
   };
 
   return (
-    <VStack height="100%" spacing={4}>
+    <VStack height="100%" spacing={4} p={4}>
       <HStack width="100%" justify="space-between">
         <LanguageSelector value={language} onChange={setLanguage} />
         <HStack>
