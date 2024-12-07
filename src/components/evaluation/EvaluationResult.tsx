@@ -33,7 +33,7 @@ const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps)
           {new Date(timestamp).toLocaleString()}
         </Text>
       </Flex>
-      <Box color={colorMode === 'dark' ? 'gray.100' : 'gray.800'}>
+      <Box color={colorMode === 'dark' ? 'gray.100' : 'gray.800'} px={2}>
         <MarkdownRenderer content={content} />
       </Box>
     </Box>
