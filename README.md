@@ -1,40 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Code Evaluation Platform
+
+A modern web application for coding challenges with real-time AI evaluation using GPT-4. Built with Next.js, TypeScript, and Chakra UI.
+
+## Features
+
+### Core Functionality
+- 🎯 Multiple coding challenges with varying difficulty levels
+- 🤖 Real-time code evaluation using Azure OpenAI GPT-4
+- 💻 Syntax-highlighted code editor with language support
+- 🌓 Dark/Light mode support
+- 📱 Responsive design for all devices
+
+### Editor Features
+- 🔍 Multiple programming language support
+- 📋 Copy/Paste functionality
+- 🧹 Clear editor with confirmation
+- ⌨️ Keyboard shortcuts
+- 🔄 Auto-save support
+
+### Evaluation System
+- ✅ Clear Pass/Fail/Warning status indicators
+- 📝 Detailed feedback from AI
+- 📊 Evaluation history
+- 🔄 Rate-limited API calls
+- 🚫 Error handling
+
+### UI/UX
+- 📱 Mobile-friendly interface
+- 🎨 Clean, modern design
+- 🔄 Smooth transitions and animations
+- 💾 Persistent settings
+- 🏷️ Challenge difficulty badges
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+- Azure OpenAI API key
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/code-evaluation-platform.git
+cd code-evaluation-platform
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Create a `.env.local` file:
+
+```env
+OPENAI_API_KEY=your_azure_openai_api_key
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. **Select a Challenge**
+   - Choose from different difficulty levels
+   - Read the challenge description
+   - View challenge requirements
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+2. **Write Code**
+   - Select your preferred programming language
+   - Write or paste your solution
+   - Use keyboard shortcuts for common actions
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Evaluate**
+   - Click "Evaluate" or use the shortcut
+   - View AI feedback in real-time
+   - See Pass/Fail status
 
-## Learn More
+4. **Review History**
+   - View previous evaluations
+   - Track your progress
+   - Learn from feedback
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+- **Frontend**: Next.js 14, TypeScript, Chakra UI
+- **State Management**: Zustand
+- **Code Editor**: Monaco Editor
+- **AI**: Azure OpenAI GPT-4
+- **Styling**: Chakra UI, Emotion
+- **API**: Next.js API Routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── components/        # React components
+├── pages/            # Next.js pages
+├── store/            # Zustand state management
+├── services/         # API services
+├── types/            # TypeScript types
+├── hooks/            # Custom React hooks
+├── utils/            # Utility functions
+├── data/            # Static data
+└── middleware/       # API middleware
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Azure OpenAI for the GPT-4 API
+- Next.js team for the amazing framework
+- Chakra UI for the component library
+- Monaco Editor team for the code editor
