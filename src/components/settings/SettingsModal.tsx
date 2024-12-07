@@ -123,9 +123,10 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                       onChange={(e) => setEditor({ fontFamily: e.target.value })}
                       width="200px"
                     >
-                      <option value="Monaco, monospace">Monaco</option>
-                      <option value="Consolas, monospace">Consolas</option>
-                      <option value="Fira Code, monospace">Fira Code</option>
+                      <option value='"Monaco", "Menlo", "Ubuntu Mono", monospace'>Monaco</option>
+                      <option value='"Consolas", "Liberation Mono", monospace'>Consolas</option>
+                      <option value='"Fira Code", "Fira Mono", monospace'>Fira Code</option>
+                      <option value='"Source Code Pro", monospace'>Source Code Pro</option>
                     </Select>
                   </HStack>
 
