@@ -32,7 +32,7 @@ const defaultSettings = {
     fontSize: 14,
   },
   editor: {
-    fontFamily: 'Monaco, monospace',
+    fontFamily: '"Monaco", "Menlo", "Ubuntu Mono", monospace',
     tabSize: 2,
     lineWrapping: true,
     autoSave: true,

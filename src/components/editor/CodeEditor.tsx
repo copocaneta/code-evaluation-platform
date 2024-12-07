@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import Editor from '@monaco-editor/react';
+import Editor, { type EditorProps } from '@monaco-editor/react';
 import { useCallback } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useColorMode } from '@chakra-ui/react';
@@ -16,6 +16,21 @@ const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProp
 
   const editorTheme = colorMode === 'dark' ? 'vs-dark' : 'vs-light';
 
+  const editorOptions: EditorProps['options'] = {
+    minimap: { enabled: editor.showMinimap },
+    fontSize: theme.fontSize,
+    fontFamily: editor.fontFamily,
+    fontLigatures: editor.fontFamily.includes('Fira Code'),
+    tabSize: editor.tabSize,
+    wordWrap: editor.lineWrapping ? 'on' : 'off',
+    lineNumbers: editor.showLineNumbers ? 'on' : 'off',
+    roundedSelection: true,
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    padding: { top: 8 },
+    fontWeight: '400',
+  };
+
   const handleEditorChange = useCallback(
     (value: string | undefined) => {
       onChange(value || '');
@@ -31,18 +46,7 @@ const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProp
         value={value}
         onChange={handleEditorChange}
         theme={editorTheme}
-        options={{
-          minimap: { enabled: editor.showMinimap },
-          fontSize: theme.fontSize,
-          fontFamily: editor.fontFamily,
-          tabSize: editor.tabSize,
-          wordWrap: editor.lineWrapping ? 'on' : 'off',
-          lineNumbers: editor.showLineNumbers ? 'on' : 'off',
-          roundedSelection: true,
-          scrollBeyondLastLine: false,
-          automaticLayout: true,
-          padding: { top: 8 },
-        }}
+        options={editorOptions}
       />
     </Box>
   );
