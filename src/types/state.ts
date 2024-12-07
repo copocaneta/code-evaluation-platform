@@ -9,6 +9,7 @@ export interface Challenge {
   id: string;
   label: string;
   description: string;
+  difficulty: 'basic' | 'intermediate' | 'advanced';
   defaultLanguage: string;
   defaultCode: string;
 }

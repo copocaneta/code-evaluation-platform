@@ -1,11 +1,15 @@
 import { Box, Flex, Heading, Container, IconButton, useDisclosure, useColorMode } from '@chakra-ui/react';
-import { FiSettings } from 'react-icons/fi';
+import { FiSettings, FiMenu } from 'react-icons/fi';
 import ChallengeTabs from './navigation/ChallengeTabs';
 import { SettingsModal } from './settings/SettingsModal';
+import MobileNavigation from './navigation/MobileNavigation';
+import { useBreakpointValue } from '@chakra-ui/react';
 
 const Header = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure();
+  const { isOpen: isNavOpen, onOpen: onNavOpen, onClose: onNavClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box
@@ -21,6 +25,19 @@ const Header = () => {
     >
       <Container maxW="container.xl" height="100%">
         <Flex height="100%" align="center" justify="space-between" gap="4">
+          {isMobile && (
+            <IconButton
+              aria-label="Open navigation"
+              icon={<FiMenu />}
+              variant="ghost"
+              onClick={onNavOpen}
+              color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
+              _hover={{
+                bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
+                color: colorMode === 'dark' ? 'white' : 'gray.800',
+              }}
+            />
+          )}
           <Heading
             size="md"
             color="brand.500"
@@ -40,7 +57,7 @@ const Header = () => {
             aria-label="Settings"
             icon={<FiSettings />}
             variant="ghost"
-            onClick={onOpen}
+            onClick={onSettingsOpen}
             color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
             _hover={{
               bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
@@ -50,7 +67,8 @@ const Header = () => {
         </Flex>
       </Container>
 
-      <SettingsModal isOpen={isOpen} onClose={onClose} />
+      <SettingsModal isOpen={isSettingsOpen} onClose={onSettingsClose} />
+      <MobileNavigation isOpen={isNavOpen} onClose={onNavClose} />
     </Box>
   );
 };
