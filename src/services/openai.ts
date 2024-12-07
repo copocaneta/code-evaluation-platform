@@ -9,7 +9,7 @@ export class OpenAIService {
   private endpoint: string;
 
   constructor() {
-    this.apiKey = process.env.OPENAI_API_KEY || '';
+    this.apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY || '';
     this.endpoint = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
   }
 

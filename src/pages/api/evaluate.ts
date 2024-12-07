@@ -1,30 +1,26 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { OpenAIService } from '../../services/openai';
-import { rateLimiterMiddleware } from '../../middleware/rateLimiter';
+import { rateLimiter } from '../../middleware/rateLimiter';
 
 const openAIService = new OpenAIService();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
-    await rateLimiterMiddleware(req, res, async () => {
-      const { code, language } = req.body;
+    await rateLimiter.check(res, 3, '10 s');
 
-      if (!code || !language) {
-        return res.status(400).json({ error: 'Code and language are required' });
-      }
+    const { code, language, systemPrompt } = req.body;
 
-      const result = await openAIService.evaluateCode(code, language);
-      res.status(200).json(result);
-    });
+    if (!code || !language || !systemPrompt) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const result = await openAIService.evaluateCode(code, language, systemPrompt);
+    res.status(200).json(result);
   } catch (error) {
-    console.error('Evaluation error:', error);
-    res.status(500).json({
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error occurred',
-    });
+    res.status(500).json({ message: 'Internal server error' });
   }
 } 
