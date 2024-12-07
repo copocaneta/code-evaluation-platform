@@ -9,11 +9,11 @@ interface EvaluationResultProps {
 
 const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps) => {
   const { colorMode } = useColorMode();
-  
-  const statusColors = {
-    success: 'green',
-    error: 'red',
-    warning: 'orange',
+
+  const statusConfig = {
+    success: { color: 'green', text: 'PASS' },
+    error: { color: 'red', text: 'FAIL' },
+    warning: { color: 'yellow', text: 'WARNING' },
   };
 
   return (
@@ -26,8 +26,8 @@ const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps)
       borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.200'}
     >
       <Flex justify="space-between" align="center" mb={4}>
-        <Badge colorScheme={statusColors[status]}>
-          {status.toUpperCase()}
+        <Badge colorScheme={statusConfig[status].color}>
+          {statusConfig[status].text}
         </Badge>
         <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}>
           {new Date(timestamp).toLocaleString()}

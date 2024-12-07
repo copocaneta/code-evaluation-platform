@@ -36,22 +36,13 @@ const CodeInputPanel = () => {
     setIsLoading(true);
     setLoading(true);
     try {
-      const result = await EvaluationService.evaluate(
-        code,
-        language,
-        `You are evaluating the ${activeChallenge.title} challenge. The task is: ${activeChallenge.description}`
-      );
-      addResult(result);
+      const systemPrompt = `You are evaluating code for the "${activeChallenge.title}" challenge. 
+The code should ${activeChallenge.description}
 
-      if (result.status === 'error') {
-        toast({
-          title: 'Evaluation Failed',
-          description: result.content,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      }
+Please evaluate if the code correctly solves this challenge and provide clear feedback.`;
+
+      const result = await EvaluationService.evaluate(code, language, systemPrompt);
+      addResult(result);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Evaluation failed');
       toast({

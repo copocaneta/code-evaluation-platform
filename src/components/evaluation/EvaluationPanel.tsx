@@ -1,15 +1,29 @@
-import { VStack, Box, Text, Spinner, Center } from '@chakra-ui/react';
+import { VStack, Box, Text, Spinner, Center, Button, HStack } from '@chakra-ui/react';
+import { FiTrash2 } from 'react-icons/fi';
 import EvaluationResult from './EvaluationResult';
 import { useEvaluationStore } from '../../store/evaluationStore';
 
 const EvaluationPanel = () => {
-  const { results, isLoading } = useEvaluationStore();
+  const { results, isLoading, clearResults } = useEvaluationStore();
 
   return (
     <VStack height="100%" spacing={4} p={4}>
-      <Text fontSize="lg" fontWeight="medium" color="gray.700">
-        Evaluation Results
-      </Text>
+      <HStack width="100%" justify="space-between">
+        <Text fontSize="lg" fontWeight="medium" color="gray.700">
+          Evaluation Results
+        </Text>
+        {results.length > 0 && (
+          <Button
+            size="sm"
+            variant="ghost"
+            leftIcon={<FiTrash2 />}
+            onClick={clearResults}
+            colorScheme="red"
+          >
+            Clear
+          </Button>
+        )}
+      </HStack>
 
       <Box flex="1" overflowY="auto">
         {isLoading ? (
