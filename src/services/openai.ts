@@ -13,7 +13,7 @@ export class OpenAIService {
     this.endpoint = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
   }
 
-  async evaluateCode(code: string, language: string): Promise<EvaluationResult> {
+  async evaluateCode(code: string, language: string, systemPrompt: string): Promise<EvaluationResult> {
     try {
       const response = await fetch(this.endpoint, {
         method: 'POST',
@@ -25,7 +25,7 @@ export class OpenAIService {
           messages: [
             {
               role: 'system',
-              content: 'You are a code evaluation assistant. Analyze the code and provide feedback.',
+              content: systemPrompt,
             },
             {
               role: 'user',

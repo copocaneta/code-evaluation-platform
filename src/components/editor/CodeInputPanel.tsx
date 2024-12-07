@@ -22,10 +22,25 @@ const CodeInputPanel = () => {
   useKeyboardShortcuts();
 
   const handleEvaluate = async () => {
+    if (!activeChallenge) {
+      toast({
+        title: 'Error',
+        description: 'Please select a challenge first',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setIsLoading(true);
     setLoading(true);
     try {
-      const result = await EvaluationService.evaluate(code, language);
+      const result = await EvaluationService.evaluate(
+        code,
+        language,
+        `You are evaluating the ${activeChallenge.title} challenge. The task is: ${activeChallenge.description}`
+      );
       addResult(result);
 
       if (result.status === 'error') {
