@@ -13,7 +13,7 @@ export const useEditorStore = create<EditorStore>()(
   persist(
     (set) => ({
       code: '',
-      language: 'javascript',
+      language: 'python',
       isEditorReady: false,
       setCode: (code) => set({ code }),
       setLanguage: (language) => set({ language }),
