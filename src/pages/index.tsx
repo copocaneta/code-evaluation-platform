@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <Grid
       templateRows="auto 1fr"
-      templateColumns={{ base: '1fr', md: '6fr 4fr' }}
+      templateColumns={{ base: '1fr', md: '2fr 3fr' }}
       gap="base"
       p="base"
       minH="calc(100vh - 64px)"

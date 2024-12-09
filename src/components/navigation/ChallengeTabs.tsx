@@ -51,16 +51,6 @@ const ChallengeTabs = () => {
             position="relative"
           >
             <Text>{challenge.title}</Text>
-            {challenge.difficulty && (
-              <Text
-                as="span"
-                fontSize="xs"
-                ml={2}
-                color={colorMode === 'dark' ? 'gray.400' : 'gray.500'}
-              >
-                ({challenge.difficulty})
-              </Text>
-            )}
           </Button>
           {activeChallenge?.id === challenge.id && (
             <motion.div

@@ -14,7 +14,6 @@ class ChallengeLoader {
         'id',
         'title',
         'description',
-        'difficulty',
         'defaultLanguage',
         'defaultCode',
       ];
@@ -35,10 +34,6 @@ class ChallengeLoader {
 
   public getChallenge(id: string): Challenge | undefined {
     return this.data.challenges.find((c) => c.id === id);
-  }
-
-  public getChallengesByDifficulty(difficulty: Challenge['difficulty']): Challenge[] {
-    return this.data.challenges.filter((c) => c.difficulty === difficulty);
   }
 
   public getMetadata() {

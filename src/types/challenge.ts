@@ -1,10 +1,7 @@
-export type Difficulty = 'basic' | 'intermediate' | 'advanced';
-
 export interface Challenge {
   id: string;
   title: string;
   description: string;
-  difficulty: Difficulty;
   defaultLanguage: string;
   defaultCode: string;
 }
