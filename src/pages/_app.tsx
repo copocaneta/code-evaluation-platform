@@ -9,6 +9,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
         {fontUrls.map((url) => (
           <link key={url} rel="stylesheet" href={url} />
         ))}
