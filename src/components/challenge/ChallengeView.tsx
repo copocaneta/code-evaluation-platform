@@ -28,9 +28,6 @@ const ChallengeView = () => {
           {activeChallenge.description}
         </Text>
       </Box>
-      <Box mt={3}>
-        <MarkdownRenderer content={activeChallenge.instructions} />
-      </Box>
     </Box>
   );
 };
