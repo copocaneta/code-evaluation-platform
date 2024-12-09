@@ -11,9 +11,9 @@ const EvaluationResult = ({ timestamp, status, content }: EvaluationResultProps)
   const { colorMode } = useColorMode();
 
   const statusConfig = {
-    success: { color: 'green', text: 'PASS' },
-    error: { color: 'red', text: 'FAIL' },
-    warning: { color: 'yellow', text: 'WARNING' },
+    success: { color: 'green', text: '🌟 Brilliant!' },
+    error: { color: 'orange', text: '🚀 Keep Going!' },
+    warning: { color: 'yellow', text: '💡 Almost There!' },
   };
 
   return (
