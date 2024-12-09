@@ -1,6 +1,5 @@
-import { Box, Flex, Heading, Text, Badge, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, useColorMode } from '@chakra-ui/react';
 import { useChallengeStore } from '../../store/challengeStore';
-import { getDifficultyColor } from '../../utils/challenge';
 
 const ChallengeView = () => {
   const { activeChallenge } = useChallengeStore();
@@ -16,9 +15,6 @@ const ChallengeView = () => {
         <Heading size="md" color={colorMode === 'dark' ? 'white' : 'gray.800'}>
           {activeChallenge.title}
         </Heading>
-        <Badge colorScheme={getDifficultyColor(activeChallenge.difficulty)}>
-          {activeChallenge.difficulty}
-        </Badge>
       </Flex>
       <Text color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
         {activeChallenge.description}

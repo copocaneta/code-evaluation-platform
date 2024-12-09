@@ -10,7 +10,6 @@ import {
   Text,
   useColorMode,
   Box,
-  Badge,
 } from '@chakra-ui/react';
 import { useChallengeStore } from '../../store/challengeStore';
 
@@ -46,14 +45,7 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => {
                   bg={activeChallenge?.id === challenge.id ? (colorMode === 'dark' ? 'whiteAlpha.100' : 'gray.50') : undefined}
                   color={colorMode === 'dark' ? 'white' : 'gray.800'}
                 >
-                  <VStack align="flex-start" spacing="1">
-                    <Text>{challenge.title}</Text>
-                    {challenge.difficulty && (
-                      <Badge size="sm" colorScheme={getDifficultyColor(challenge.difficulty)}>
-                        {challenge.difficulty}
-                      </Badge>
-                    )}
-                  </VStack>
+                  <Text>{challenge.title}</Text>
                 </Button>
                 {challenge.description && (
                   <Text
@@ -73,19 +65,6 @@ const MobileNavigation = ({ isOpen, onClose }: MobileNavigationProps) => {
       </DrawerContent>
     </Drawer>
   );
-};
-
-const getDifficultyColor = (difficulty: string) => {
-  switch (difficulty.toLowerCase()) {
-    case 'basic':
-      return 'green';
-    case 'intermediate':
-      return 'yellow';
-    case 'advanced':
-      return 'red';
-    default:
-      return 'gray';
-  }
 };
 
 export default MobileNavigation; 
