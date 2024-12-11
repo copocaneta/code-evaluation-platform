@@ -8,14 +8,6 @@ console.log('OpenAI API Key present:', !!process.env.OPENAI_API_KEY_P);
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY_P,
-  // Add this to help with debugging
-  onError: (error) => {
-    console.error('OpenAI Error:', {
-      message: error.message,
-      type: error.type,
-      status: error.status,
-    });
-  },
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
