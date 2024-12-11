@@ -27,12 +27,23 @@ export class LeaderboardService {
   }
 
   static async addPoints(userId: string, username: string, points: number, avatarUrl?: string) {
+    // First, try to get existing points
+    const { data: existingData } = await supabase
+      .from('leaderboard')
+      .select('points')
+      .eq('user_id', userId)
+      .single();
+
+    const currentPoints = existingData?.points || 0;
+    const newTotalPoints = currentPoints + points;
+
+    // Update with accumulated points
     const { data, error } = await supabase
       .from('leaderboard')
       .upsert({
         user_id: userId,
         username,
-        points: points,
+        points: newTotalPoints, // Add new points to existing points
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString()
       })
@@ -40,7 +51,7 @@ export class LeaderboardService {
       .single();
 
     if (error) throw error;
-    return data?.points ?? points;
+    return data?.points ?? newTotalPoints;
   }
 
   static async getLeaderboard(): Promise<LeaderboardEntry[]> {
