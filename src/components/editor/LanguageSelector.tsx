@@ -19,7 +19,7 @@ const LanguageSelector = ({ value, onChange }: LanguageSelectorProps) => {
       onChange={(e) => onChange(e.target.value)}
       width="200px"
       size="sm"
-      defaultValue="python"
+      defaultValue={'python'}
     >
       {languages.map((lang) => (
         <option key={lang.id} value={lang.id}>

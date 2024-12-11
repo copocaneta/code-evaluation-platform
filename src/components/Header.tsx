@@ -1,5 +1,6 @@
-import { Box, Flex, Heading, IconButton, useDisclosure, useColorMode } from '@chakra-ui/react';
+import { Box, Flex, Heading, IconButton, Button, useDisclosure, useColorMode } from '@chakra-ui/react';
 import { FiSettings, FiMenu } from 'react-icons/fi';
+import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import ChallengeTabs from './navigation/ChallengeTabs';
 import { SettingsModal } from './settings/SettingsModal';
 import MobileNavigation from './navigation/MobileNavigation';
@@ -53,17 +54,38 @@ const Header = () => {
           <ChallengeTabs />
         </Box>
 
-        <IconButton
-          aria-label="Settings"
-          icon={<FiSettings />}
-          variant="ghost"
-          onClick={onSettingsOpen}
-          color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
-          _hover={{
-            bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
-            color: colorMode === 'dark' ? 'white' : 'gray.800',
-          }}
-        />
+        <Flex align="center" gap="4">
+          <IconButton
+            aria-label="Settings"
+            icon={<FiSettings />}
+            variant="ghost"
+            onClick={onSettingsOpen}
+            color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
+            _hover={{
+              bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
+              color: colorMode === 'dark' ? 'white' : 'gray.800',
+            }}
+          />
+          <SignedIn>
+            <UserButton 
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: {
+                    width: '32px',
+                    height: '32px'
+                  }
+                }
+              }}
+            />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton>
+              <Button variant="solid" colorScheme="brand" size="sm">
+                Sign In
+              </Button>
+            </SignInButton>
+          </SignedOut>
+        </Flex>
       </Flex>
 
       <SettingsModal isOpen={isSettingsOpen} onClose={onSettingsClose} />

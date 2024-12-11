@@ -1,3 +1,4 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -7,7 +8,7 @@ import { fontUrls } from '../styles/fonts';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <ClerkProvider {...pageProps}>
       <Head>
         <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
         {fontUrls.map((url) => (
@@ -20,6 +21,6 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </MainLayout>
       </ChakraProvider>
-    </>
+    </ClerkProvider>
   );
 } 
