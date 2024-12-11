@@ -11,22 +11,31 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  const { userId } = getAuth(req);
-  if (!userId) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
   try {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ 
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        status: 'error',
+        content: 'Method not allowed'
+      });
+    }
+
+    const { userId } = getAuth(req);
+    if (!userId) {
+      return res.status(401).json({ 
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+        status: 'error',
+        content: 'Unauthorized'
+      });
+    }
+
     await rateLimiter.check(res, 3, '10 s');
     
     const { code, language, systemPrompt } = req.body;
 
     if (!code || !language || !systemPrompt) {
-      console.error('Missing required fields:', { code: !!code, language: !!language, systemPrompt: !!systemPrompt });
       return res.status(400).json({ 
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
@@ -78,11 +87,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       apiKey: !!process.env.OPENAI_API_KEY_P
     });
 
+    // Ensure we always return a properly formatted JSON response
     return res.status(500).json({ 
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
       status: 'error',
-      content: error instanceof Error ? error.message : 'An unknown error occurred',
+      content: error instanceof Error 
+        ? error.message 
+        : typeof error === 'string' 
+          ? error 
+          : 'An unknown error occurred',
     });
   }
 } 

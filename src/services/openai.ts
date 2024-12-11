@@ -7,8 +7,6 @@ export class OpenAIService {
         ? window.location.origin 
         : 'http://localhost:3000';
 
-      console.log('Making API request to:', `${baseUrl}/api/evaluate`);
-
       const response = await fetch(`${baseUrl}/api/evaluate`, {
         method: 'POST',
         headers: {
@@ -21,17 +19,29 @@ export class OpenAIService {
         }),
       });
 
-      if (!response.ok) {
+      let errorMessage = '';
+      try {
         const errorData = await response.text();
-        console.error('API Response Error:', {
-          status: response.status,
-          statusText: response.statusText,
-          data: errorData
-        });
-        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        try {
+          const jsonError = JSON.parse(errorData);
+          errorMessage = jsonError.message || jsonError.content || errorData;
+        } catch {
+          errorMessage = errorData;
+        }
+      } catch {
+        errorMessage = 'Failed to read error response';
       }
 
-      return await response.json();
+      if (!response.ok) {
+        throw new Error(errorMessage || `API request failed: ${response.status} ${response.statusText}`);
+      }
+
+      try {
+        return await response.json();
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        throw new Error('Invalid response format from server');
+      }
     } catch (error) {
       console.error('Error during code evaluation:', {
         error: error instanceof Error ? error.message : 'Unknown error',
