@@ -1,54 +1,43 @@
 import { EvaluationResult } from '../types/state';
 
-const AZURE_ENDPOINT = 'https://oai-playgrou-e1-p-1.openai.azure.com';
-const DEPLOYMENT_NAME = 'gpt-4o';
-const API_VERSION = '2024-08-01-preview';
-
 export class OpenAIService {
-  private apiKey: string;
-  private endpoint: string;
-
-  constructor() {
-    console.log('OpenAI Service Configuration:', {
-      hasApiKey: !!process.env.OPENAI_API_KEY,
-      hasNextPublicApiKey: !!process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-      endpoint: AZURE_ENDPOINT,
-      deploymentName: DEPLOYMENT_NAME,
-      apiVersion: API_VERSION
-    });
-
-    this.apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY || '';
-    this.endpoint = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
-  }
-
   async evaluateCode(code: string, language: string, systemPrompt: string): Promise<EvaluationResult> {
     try {
-      // First call for detailed evaluation
-      const evaluationResponse = await this.makeOpenAIRequest(
-        systemPrompt,
-        `Please evaluate this ${language} code:\n\n${code}`
-      );
+      const baseUrl = typeof window !== 'undefined' 
+        ? window.location.origin 
+        : 'http://localhost:3000';
 
-      // Second call specifically for pass/fail status
-      const statusResponse = await this.makeOpenAIRequest(
-        "You are a code validator. Respond with ONLY 'PASS' or 'FAIL'. Pass means the code fully meets requirements, Fail means it doesn't.",
-        `Does this code meet the requirements?\nRequirements: ${systemPrompt}\nCode:\n${code}`
-      );
+      console.log('Making API request to:', `${baseUrl}/api/evaluate`);
 
-      const status = this.determineStatus(statusResponse.choices[0].message.content);
+      const response = await fetch(`${baseUrl}/api/evaluate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code,
+          language,
+          systemPrompt,
+        }),
+      });
 
-      return {
-        id: Date.now().toString(),
-        timestamp: new Date().toISOString(),
-        status,
-        content: evaluationResponse.choices[0].message.content,
-      };
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('API Response Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          data: errorData
+        });
+        throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.error('Error during code evaluation:', {
         error: error instanceof Error ? error.message : 'Unknown error',
-        apiKeyPresent: !!this.apiKey,
-        endpoint: this.endpoint,
+        stack: error instanceof Error ? error.stack : undefined
       });
+      
       return {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
@@ -56,60 +45,5 @@ export class OpenAIService {
         content: error instanceof Error ? error.message : 'An unknown error occurred',
       };
     }
-  }
-
-  private async makeOpenAIRequest(systemPrompt: string, userPrompt: string) {
-    try {
-      console.log('Making OpenAI Request:', {
-        endpoint: this.endpoint,
-        hasApiKey: !!this.apiKey,
-        apiKeyLength: this.apiKey.length,
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': '****' + this.apiKey.slice(-4)
-        }
-      });
-
-      const response = await fetch(this.endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': this.apiKey,
-        },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt },
-          ],
-          temperature: 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('OpenAI API Error Details:', {
-          status: response.status,
-          statusText: response.statusText,
-          endpoint: this.endpoint,
-          hasApiKey: !!this.apiKey,
-          apiKeyLength: this.apiKey.length,
-          responseHeaders: Object.fromEntries(response.headers.entries()),
-        });
-
-        const errorBody = await response.text();
-        console.error('Error Response Body:', errorBody);
-
-        throw new Error(`API request failed: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('OpenAI Request Error:', error);
-      throw error;
-    }
-  }
-
-  private determineStatus(statusResponse: string): 'success' | 'error' | 'warning' {
-    const normalizedResponse = statusResponse.trim().toUpperCase();
-    return normalizedResponse === 'PASS' ? 'success' : 'error';
   }
 } 

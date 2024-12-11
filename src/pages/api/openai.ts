@@ -1,21 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAuth } from '@clerk/nextjs/server';
 import OpenAI from 'openai';
-import { rateLimiter } from '../../middleware/rateLimiter';
-
-// Log the API key presence for debugging
-console.log('OpenAI API Key present:', !!process.env.OPENAI_API_KEY_P);
+import { getAuth } from '@clerk/nextjs/server';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY_P,
-  // Add this to help with debugging
-  onError: (error) => {
-    console.error('OpenAI Error:', {
-      message: error.message,
-      type: error.type,
-      status: error.status,
-    });
-  },
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -29,8 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    await rateLimiter.check(res, 3, '10 s');
-    
     const { code, language, systemPrompt } = req.body;
 
     if (!code || !language || !systemPrompt) {
@@ -42,6 +28,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         content: 'Missing required fields'
       });
     }
+
+    console.log('Making OpenAI request with:', {
+      model: "gpt-4",
+      hasApiKey: !!process.env.OPENAI_API_KEY_P,
+      language,
+      codeLength: code.length,
+      promptLength: systemPrompt.length
+    });
 
     // First call for detailed evaluation
     const evaluationCompletion = await openai.chat.completions.create({
