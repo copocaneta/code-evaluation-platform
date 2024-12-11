@@ -1,10 +1,21 @@
 import { Box, Text, useColorMode } from '@chakra-ui/react';
 import { useChallengeStore } from '../../store/challengeStore';
+import { useEditorStore } from '../../store/editorStore';
+import { useEffect } from 'react';
 import MarkdownRenderer from '../evaluation/MarkdownRenderer';
 
 const ChallengeView = () => {
   const { activeChallenge } = useChallengeStore();
+  const { setCode, setLanguage } = useEditorStore();
   const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    if (activeChallenge) {
+      console.log('Setting initial code for challenge:', activeChallenge.id);
+      setCode(activeChallenge.initialCode);
+      setLanguage(activeChallenge.defaultLanguage);
+    }
+  }, [activeChallenge?.id]);
 
   if (!activeChallenge) {
     return (

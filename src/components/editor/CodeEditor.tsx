@@ -1,18 +1,20 @@
 import { Box } from '@chakra-ui/react';
 import Editor, { type EditorProps } from '@monaco-editor/react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useColorMode } from '@chakra-ui/react';
+import { useEditorStore } from '../../store/editorStore';
 
 interface CodeEditorProps {
   value: string;
   onChange: (value: string) => void;
-  language?: string;
+  language: string;
 }
 
-const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProps) => {
+const CodeEditor = ({ value, onChange, language }: CodeEditorProps) => {
   const { editor, theme } = useSettingsStore();
   const { colorMode } = useColorMode();
+  const { code, setCode } = useEditorStore();
 
   const editorTheme = colorMode === 'dark' ? 'vs-dark' : 'vs-light';
 
@@ -37,6 +39,12 @@ const CodeEditor = ({ value, onChange, language = 'javascript' }: CodeEditorProp
     },
     [onChange]
   );
+
+  useEffect(() => {
+    if (value !== code) {
+      onChange(code);
+    }
+  }, [code]);
 
   return (
     <Box h="100%" borderRadius="md" overflow="hidden" position="relative">

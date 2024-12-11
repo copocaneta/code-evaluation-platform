@@ -17,11 +17,12 @@ export const useChallengeStore = create<ChallengeStore>((set, get) => ({
   setActiveChallenge: (challengeId) => {
     const challenge = get().challenges.find((c) => c.id === challengeId);
     if (challenge) {
+      console.log('Setting active challenge:', challengeId);
       set({ activeChallenge: challenge });
     }
   },
   loadChallenges: async () => {
-    if (get().challenges.length > 0) return; // Don't reload if we already have challenges
+    if (get().challenges.length > 0) return;
     
     set({ isLoading: true });
     try {
