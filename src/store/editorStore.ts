@@ -15,13 +15,19 @@ export const useEditorStore = create<EditorStore>()(
       code: '',
       language: 'python',
       isEditorReady: false,
-      setCode: (code) => set({ code }),
+      setCode: (code) => {
+        if (code) {
+          console.log('Setting editor code:', code.substring(0, 50) + '...');
+        }
+        set({ code: code || '' });
+      },
       setLanguage: (language) => set({ language }),
       setEditorReady: (isEditorReady) => set({ isEditorReady }),
       clearEditor: () => set({ code: '' }),
     }),
     {
       name: 'editor-storage',
+      partialize: (state) => ({ language: state.language }),
     }
   )
 ); 

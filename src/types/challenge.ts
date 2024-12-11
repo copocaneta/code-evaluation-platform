@@ -4,6 +4,7 @@ export interface Challenge {
   description: string;
   defaultLanguage: string;
   defaultCode: string;
+  initialCode: string;
 }
 
 export interface ChallengeData {
