@@ -20,67 +20,42 @@ const Header = () => {
       left={0}
       right={0}
       height="64px"
-      bg={colorMode === 'dark' ? 'gray.700' : 'white'}
-      boxShadow="sm"
-      zIndex={10}
-      px="32px"
+      borderBottom="1px"
+      borderColor={colorMode === 'dark' ? 'gray.700' : 'gray.200'}
+      bg={colorMode === 'dark' ? 'gray.800' : 'white'}
+      zIndex={1000}
     >
-      <Flex height="100%" align="center" justify="space-between" gap="4">
-        {isMobile && (
-          <IconButton
-            aria-label="Open navigation"
-            icon={<FiMenu />}
-            variant="ghost"
-            onClick={onNavOpen}
-            color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
-            _hover={{
-              bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
-              color: colorMode === 'dark' ? 'white' : 'gray.800',
-            }}
-          />
-        )}
-        <Heading
-          size="md"
-          color="brand.500"
-          flexShrink={0}
-          cursor="pointer"
-          _hover={{ color: 'brand.600' }}
-          transition="color 0.2s"
-        >
-          {process.env.NEXT_PUBLIC_APP_NAME}
-        </Heading>
+      <Flex px={4} h="100%" align="center" justify="space-between">
+        <Flex align="center">
+          {isMobile && (
+            <IconButton
+              aria-label="Open navigation"
+              icon={<FiMenu />}
+              variant="ghost"
+              onClick={onNavOpen}
+              mr={2}
+            />
+          )}
+          <Heading size="md" color="brand.500">
+            {process.env.NEXT_PUBLIC_APP_NAME}
+          </Heading>
+        </Flex>
 
-        <Box flex="1" display={{ base: 'none', md: 'block' }}>
-          <ChallengeTabs />
-        </Box>
+        {!isMobile && <ChallengeTabs />}
 
-        <Flex align="center" gap="4">
+        <Flex align="center" gap={2}>
           <IconButton
             aria-label="Settings"
             icon={<FiSettings />}
             variant="ghost"
             onClick={onSettingsOpen}
-            color={colorMode === 'dark' ? 'gray.200' : 'gray.600'}
-            _hover={{
-              bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
-              color: colorMode === 'dark' ? 'white' : 'gray.800',
-            }}
           />
           <SignedIn>
-            <UserButton 
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: {
-                    width: '32px',
-                    height: '32px'
-                  }
-                }
-              }}
-            />
+            <UserButton afterSignOutUrl="/" />
           </SignedIn>
           <SignedOut>
-            <SignInButton>
-              <Button variant="solid" colorScheme="brand" size="sm">
+            <SignInButton mode="modal">
+              <Button colorScheme="brand" size="sm">
                 Sign In
               </Button>
             </SignInButton>
@@ -88,8 +63,8 @@ const Header = () => {
         </Flex>
       </Flex>
 
-      <SettingsModal isOpen={isSettingsOpen} onClose={onSettingsClose} />
       <MobileNavigation isOpen={isNavOpen} onClose={onNavClose} />
+      <SettingsModal isOpen={isSettingsOpen} onClose={onSettingsClose} />
     </Box>
   );
 };

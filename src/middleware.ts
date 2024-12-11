@@ -1,28 +1,28 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// List of public routes that don't require authentication
-const publicRoutes = ['/', '/sign-in', '/sign-up'];
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api/public(.*)'
+]);
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Allow public routes
-  if (publicRoutes.includes(pathname)) {
-    return NextResponse.next();
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect();
   }
-
-  // Check for authentication cookie
-  const authCookie = request.cookies.get('__session');
-  if (!authCookie) {
-    const url = new URL('/sign-in', request.url);
-    url.searchParams.set('redirect_url', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ['/((?!api/public|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (images, etc)
+     */
+    '/((?!_next/static|_next/image|favicon.ico).*)',
+    '/(api|trpc)(.*)'
+  ]
 }; 
