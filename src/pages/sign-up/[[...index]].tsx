@@ -12,6 +12,7 @@ export default function SignUpPage() {
       _dark={{ bg: 'gray.900' }}
     >
       <SignUp 
+        routing="hash"
         appearance={{
           elements: {
             formButtonPrimary: {
