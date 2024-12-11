@@ -43,6 +43,24 @@ Please evaluate if the code correctly solves this challenge and provide clear fe
 
       const result = await EvaluationService.evaluate(code, language, systemPrompt);
       addResult(result);
+
+      if (result.status === 'success') {
+        const response = await fetch('/api/points', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ points: 20 })
+        });
+
+        if (response.ok) {
+          toast({
+            title: 'Points Awarded!',
+            description: 'You earned 20 points for your successful solution!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+        }
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Evaluation failed');
       toast({

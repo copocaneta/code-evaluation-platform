@@ -1,16 +1,21 @@
 import { Box, Flex, Heading, IconButton, Button, useDisclosure, useColorMode } from '@chakra-ui/react';
-import { FiSettings, FiMenu } from 'react-icons/fi';
+import { FiSettings, FiMenu, FiAward, FiCode } from 'react-icons/fi';
 import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/nextjs';
 import ChallengeTabs from './navigation/ChallengeTabs';
 import { SettingsModal } from './settings/SettingsModal';
 import MobileNavigation from './navigation/MobileNavigation';
 import { useBreakpointValue } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Header = () => {
   const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure();
   const { isOpen: isNavOpen, onOpen: onNavOpen, onClose: onNavClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const router = useRouter();
+  const isChallengePage = router.pathname.startsWith('/challenges');
 
   return (
     <Box
@@ -36,14 +41,32 @@ const Header = () => {
               mr={2}
             />
           )}
-          <Heading size="md" color="brand.500">
-            {process.env.NEXT_PUBLIC_APP_NAME}
-          </Heading>
+          <Link href="/">
+            <Heading size="md" color="brand.500">
+              {process.env.NEXT_PUBLIC_APP_NAME}
+            </Heading>
+          </Link>
         </Flex>
 
-        {!isMobile && <ChallengeTabs />}
+        {!isMobile && isChallengePage && <ChallengeTabs />}
 
         <Flex align="center" gap={2}>
+          <Link href="/challenges">
+            <IconButton
+              aria-label="Challenges"
+              icon={<FiCode />}
+              variant="ghost"
+              color={router.pathname.startsWith('/challenges') ? 'brand.500' : undefined}
+            />
+          </Link>
+          <Link href="/leaderboard">
+            <IconButton
+              aria-label="Leaderboard"
+              icon={<FiAward />}
+              variant="ghost"
+              color={router.pathname === '/leaderboard' ? 'brand.500' : undefined}
+            />
+          </Link>
           <IconButton
             aria-label="Settings"
             icon={<FiSettings />}

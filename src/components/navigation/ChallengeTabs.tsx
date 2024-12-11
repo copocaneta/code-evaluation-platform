@@ -1,11 +1,14 @@
-import { Flex, Button, useColorMode, Box, Text, useBreakpointValue } from '@chakra-ui/react';
-import { useChallengeStore } from '../../store/challengeStore';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Button, Flex, Text, Box, useColorMode, useBreakpointValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import { useChallengeStore } from '../../store/challengeStore';
 
 const ChallengeTabs = () => {
-  const { challenges, activeChallenge, setActiveChallenge } = useChallengeStore();
+  const { challenges, activeChallenge } = useChallengeStore();
   const { colorMode } = useColorMode();
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const router = useRouter();
 
   return (
     <Flex 
@@ -27,31 +30,32 @@ const ChallengeTabs = () => {
     >
       {challenges.map((challenge) => (
         <Box key={challenge.id} position="relative">
-          <Button
-            variant="ghost"
-            size={isMobile ? 'sm' : 'md'}
-            px={isMobile ? '3' : '6'}
-            color={
-              activeChallenge?.id === challenge.id
-                ? 'brand.500'
-                : colorMode === 'dark'
-                ? 'gray.200'
-                : 'gray.600'
-            }
-            borderRadius="0"
-            _hover={{
-              bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
-              color: colorMode === 'dark' ? 'white' : 'gray.800',
-            }}
-            _focus={{
-              boxShadow: 'none',
-              outline: 'none',
-            }}
-            onClick={() => setActiveChallenge(challenge.id)}
-            position="relative"
-          >
-            <Text>{challenge.title}</Text>
-          </Button>
+          <Link href={`/challenges/${challenge.id}`} passHref>
+            <Button
+              as="a"
+              variant="ghost"
+              size={isMobile ? 'sm' : 'md'}
+              px={isMobile ? '3' : '6'}
+              color={
+                activeChallenge?.id === challenge.id
+                  ? 'brand.500'
+                  : colorMode === 'dark'
+                  ? 'gray.200'
+                  : 'gray.600'
+              }
+              borderRadius="0"
+              _hover={{
+                bg: colorMode === 'dark' ? 'whiteAlpha.200' : 'gray.100',
+                color: colorMode === 'dark' ? 'white' : 'gray.800',
+              }}
+              _focus={{
+                boxShadow: 'none',
+                outline: 'none',
+              }}
+            >
+              <Text>{challenge.title}</Text>
+            </Button>
+          </Link>
           {activeChallenge?.id === challenge.id && (
             <motion.div
               layoutId="activeTab"

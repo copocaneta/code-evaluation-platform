@@ -6,13 +6,11 @@ export interface Challenge {
   defaultCode: string;
 }
 
-export interface ChallengeMetadata {
-  version: string;
-  lastUpdated: string;
-  totalChallenges: number;
-}
-
 export interface ChallengeData {
   challenges: Challenge[];
-  metadata: ChallengeMetadata;
+  metadata: {
+    version: string;
+    lastUpdated: string;
+    totalChallenges: number;
+  };
 } 
