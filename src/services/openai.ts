@@ -36,6 +36,11 @@ export class OpenAIService {
         content: evaluationResponse.choices[0].message.content,
       };
     } catch (error) {
+      console.error('Error during code evaluation:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        apiKeyPresent: !!this.apiKey,
+        endpoint: this.endpoint,
+      });
       return {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
@@ -46,26 +51,37 @@ export class OpenAIService {
   }
 
   private async makeOpenAIRequest(systemPrompt: string, userPrompt: string) {
-    const response = await fetch(this.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': this.apiKey,
-      },
-      body: JSON.stringify({
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.7,
-      }),
-    });
+    try {
+      const response = await fetch(this.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': this.apiKey,
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          temperature: 0.7,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.statusText}`);
+      if (!response.ok) {
+        console.error('OpenAI API Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          endpoint: this.endpoint,
+          hasApiKey: !!this.apiKey,
+        });
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('OpenAI Request Error:', error);
+      throw error;
     }
-
-    return await response.json();
   }
 
   private determineStatus(statusResponse: string): 'success' | 'error' | 'warning' {
