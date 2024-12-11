@@ -9,6 +9,7 @@ import { useEvaluationStore } from '../../store/evaluationStore';
 import { EvaluationService } from '../../services/evaluation';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import { PointsService } from '../../services/pointsService';
 
 const CodeInputPanel = () => {
   const { code, language, setCode, setLanguage, clearEditor } = useEditorStore();
@@ -45,20 +46,16 @@ Please evaluate if the code correctly solves this challenge and provide clear fe
       addResult(result);
 
       if (result.status === 'success') {
-        const response = await fetch('/api/points', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ points: 20 })
-        });
-
-        if (response.ok) {
+        try {
+          await PointsService.awardPoints(10);
           toast({
-            title: 'Points Awarded!',
-            description: 'You earned 20 points for your successful solution!',
+            title: 'Points awarded!',
+            description: '+10 points',
             status: 'success',
             duration: 3000,
-            isClosable: true,
           });
+        } catch (error) {
+          console.error('Error awarding points:', error);
         }
       }
     } catch (error) {
