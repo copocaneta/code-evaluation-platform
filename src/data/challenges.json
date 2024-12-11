@@ -1,0 +1,12 @@
+{
+  "challenges": [
+    {
+      "id": "managing-complexity",
+      "title": "Managing Complexity",
+      "description": "Encapsulate data and associated behaviors in classes to model real-world entities for better clarity.",
+      "defaultLanguage": "python",
+      "defaultCode": "class Product:\n    def __init__(self, name, price):\n        self.name = name\n        self.price = price\n\n    def display(self):\n        print(f\"{self.name} costs ${self.price}\")\n\n    def apply_discount(self, discount):\n        self.price -= discount\n\n# Creating an instance of the Product class\nproduct = Product(\"Product X\", 100)\nproduct.display()\nproduct.apply_discount(10)\nproduct.display()",
+      "initialCode": "# Global variables for a product\nproduct_name = \"Product X\"\nproduct_price = 100\n\ndef display_product():\n    print(f\"{product_name} costs ${product_price}\")\n\ndef apply_discount(discount):\n    global product_price\n    product_price -= discount\n\n# Using the functions and global variables\ndisplay_product()\napply_discount(10)\ndisplay_product()"
+    }
+  ]
+} 
