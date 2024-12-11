@@ -9,6 +9,14 @@ export class OpenAIService {
   private endpoint: string;
 
   constructor() {
+    console.log('OpenAI Service Configuration:', {
+      hasApiKey: !!process.env.OPENAI_API_KEY,
+      hasNextPublicApiKey: !!process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      endpoint: AZURE_ENDPOINT,
+      deploymentName: DEPLOYMENT_NAME,
+      apiVersion: API_VERSION
+    });
+
     this.apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY || '';
     this.endpoint = `${AZURE_ENDPOINT}/openai/deployments/${DEPLOYMENT_NAME}/chat/completions?api-version=${API_VERSION}`;
   }
@@ -52,6 +60,16 @@ export class OpenAIService {
 
   private async makeOpenAIRequest(systemPrompt: string, userPrompt: string) {
     try {
+      console.log('Making OpenAI Request:', {
+        endpoint: this.endpoint,
+        hasApiKey: !!this.apiKey,
+        apiKeyLength: this.apiKey.length,
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': '****' + this.apiKey.slice(-4)
+        }
+      });
+
       const response = await fetch(this.endpoint, {
         method: 'POST',
         headers: {
@@ -68,12 +86,18 @@ export class OpenAIService {
       });
 
       if (!response.ok) {
-        console.error('OpenAI API Error:', {
+        console.error('OpenAI API Error Details:', {
           status: response.status,
           statusText: response.statusText,
           endpoint: this.endpoint,
           hasApiKey: !!this.apiKey,
+          apiKeyLength: this.apiKey.length,
+          responseHeaders: Object.fromEntries(response.headers.entries()),
         });
+
+        const errorBody = await response.text();
+        console.error('Error Response Body:', errorBody);
+
         throw new Error(`API request failed: ${response.statusText}`);
       }
 
