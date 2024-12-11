@@ -1,7 +1,7 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignUp } from "@clerk/nextjs";
 import { Box } from "@chakra-ui/react";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <Box 
       minH="100vh" 
@@ -11,7 +11,7 @@ export default function SignInPage() {
       bg="gray.50"
       _dark={{ bg: 'gray.900' }}
     >
-      <SignIn 
+      <SignUp 
         appearance={{
           elements: {
             formButtonPrimary: {

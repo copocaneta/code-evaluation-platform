@@ -1,55 +1,33 @@
-import { Grid, GridItem, useBreakpointValue, useColorMode } from '@chakra-ui/react';
-import CodeInputPanel from '../components/editor/CodeInputPanel';
-import EvaluationPanel from '../components/evaluation/EvaluationPanel';
-import ChallengeView from '../components/challenge/ChallengeView';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useClerk } from '@clerk/nextjs';
+import { useChallengeStore } from '../store/challengeStore';
+import { Center, Spinner } from '@chakra-ui/react';
 
 export default function Home() {
-  const isMobile = useBreakpointValue({ base: true, md: false });
-  const { colorMode } = useColorMode();
+  const router = useRouter();
+  const { session } = useClerk();
+  const { challenges, loadChallenges, isLoading } = useChallengeStore();
 
-  const bgColor = colorMode === 'dark' ? 'gray.700' : 'white';
-  const borderColor = colorMode === 'dark' ? 'gray.600' : 'gray.200';
+  useEffect(() => {
+    if (session) {
+      loadChallenges();
+    }
+  }, [session, loadChallenges]);
 
-  return (
-    <Grid
-      templateRows="auto 1fr"
-      templateColumns={{ base: '1fr', md: '2fr 3fr' }}
-      gap="base"
-      p="base"
-      minH="calc(100vh - 64px)"
-    >
-      <GridItem
-        colSpan={{ base: 1, md: 2 }}
-        bg={bgColor}
-        borderRadius="md"
-        borderWidth="1px"
-        borderColor={borderColor}
-        overflow="auto"
-      >
-        <ChallengeView />
-      </GridItem>
+  useEffect(() => {
+    if (session && !isLoading && challenges.length > 0) {
+      router.push('/challenges');
+    }
+  }, [session, challenges, isLoading, router]);
 
-      <GridItem
-        bg={bgColor}
-        borderRadius="md"
-        borderWidth="1px"
-        borderColor={borderColor}
-        height={isMobile ? 'calc(50vh - 32px)' : '100%'}
-        overflow="hidden"
-      >
-        <CodeInputPanel />
-      </GridItem>
+  if (isLoading) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" color="brand.500" />
+      </Center>
+    );
+  }
 
-      <GridItem
-        bg={bgColor}
-        borderRadius="md"
-        borderWidth="1px"
-        borderColor={borderColor}
-        height={isMobile ? 'calc(50vh - 32px)' : '100%'}
-        overflow="auto"
-      >
-        <EvaluationPanel />
-      </GridItem>
-    </Grid>
-  );
+  return null;
 } 
