@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "@monaco-editor/react": "^4.6.0",
     "@supabase/supabase-js": "^2.47.3",
+    "openai": "^4.0.0",
     "@vercel/kv": "^3.0.0",
     "@vercel/postgres": "^0.10.0",
     "framer-motion": "^11.0.5",
