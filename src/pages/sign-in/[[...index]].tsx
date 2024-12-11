@@ -12,6 +12,7 @@ export default function SignInPage() {
       _dark={{ bg: 'gray.900' }}
     >
       <SignIn 
+        routing="hash"
         appearance={{
           elements: {
             formButtonPrimary: {

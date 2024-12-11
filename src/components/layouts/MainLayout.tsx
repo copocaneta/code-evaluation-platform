@@ -24,6 +24,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         _dark={{ bg: 'gray.900' }}
       >
         <SignIn 
+          routing="hash"
           appearance={{
             elements: {
               formButtonPrimary: {
