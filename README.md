@@ -1,4 +1,4 @@
-# Code Evaluation Platform
+# AI Code Evaluation Game
 
 A modern web application for coding challenges with real-time AI evaluation using GPT-4. Built with Next.js, TypeScript, and Chakra UI.
 

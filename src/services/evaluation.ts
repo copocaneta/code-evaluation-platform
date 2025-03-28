@@ -16,11 +16,17 @@ export class EvaluationService {
 
       if (!response.ok) {
         const error = await response.json();
+        if (response.status === 409) {
+          throw new Error(error.content);
+        }
         throw new Error(error.message || 'Evaluation failed');
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof Error && error.message.includes('already successfully completed')) {
+        throw error;
+      }
       return {
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),

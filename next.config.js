@@ -6,7 +6,7 @@ const nextConfig = {
     unoptimized: true
   },
   env: {
-    NEXT_PUBLIC_APP_NAME: 'AIS AI Training - SWE Excellence'
+    NEXT_PUBLIC_APP_NAME: 'AI Code Evaluation Game'
   },
   webpack: (config) => {
     config.experiments = {

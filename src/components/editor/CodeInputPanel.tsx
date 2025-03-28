@@ -40,7 +40,14 @@ const CodeInputPanel = () => {
       const systemPrompt = `You are evaluating code for the "${activeChallenge.title}" challenge. 
 The code should ${activeChallenge.description}
 
-Please evaluate if the code correctly solves this challenge and provide clear feedback.`;
+Please evaluate if the code correctly solves this challenge and provide clear feedback.
+If the code is incorrect, DO NOT provide the complete solution. Instead:
+1. Point out what's wrong or missing
+2. Give a small, helpful hint that guides the user in the right direction
+3. Encourage them to think about the problem differently if needed
+4. Never show actual code that solves the problem
+
+Remember: The goal is to help users learn by figuring out the solution themselves.`;
 
       const result = await EvaluationService.evaluate(code, language, systemPrompt, activeChallenge.id);
       addResult(result);
@@ -57,24 +64,28 @@ Please evaluate if the code correctly solves this challenge and provide clear fe
         } catch (error) {
           console.error('Error awarding points:', error);
         }
-      } else if (result.status === 'warning') {
+      }
+    } catch (error) {
+      // Check if the error is due to an already completed challenge
+      const errorMessage = error instanceof Error ? error.message : '';
+      if (errorMessage.includes('already successfully completed')) {
         toast({
-          title: 'Challenge already completed',
-          description: 'You have already successfully completed this challenge',
-          status: 'warning',
+          title: 'Challenge Already Completed',
+          description: 'You have already solved this challenge successfully. Please select a new challenge from the menu to continue your learning journey.',
+          status: 'info',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        setError(error instanceof Error ? error.message : 'Evaluation failed');
+        toast({
+          title: 'Error',
+          description: 'Failed to evaluate code',
+          status: 'error',
           duration: 5000,
           isClosable: true,
         });
       }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Evaluation failed');
-      toast({
-        title: 'Error',
-        description: 'Failed to evaluate code',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
     } finally {
       setIsLoading(false);
       setLoading(false);
