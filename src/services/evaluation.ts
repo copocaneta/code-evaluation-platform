@@ -4,14 +4,14 @@ import { EvaluationResult } from '../types/state';
 const openAIService = new OpenAIService();
 
 export class EvaluationService {
-  static async evaluate(code: string, language: string, systemPrompt: string): Promise<EvaluationResult> {
+  static async evaluate(code: string, language: string, systemPrompt: string, challengeId: string): Promise<EvaluationResult> {
     try {
       const response = await fetch('/api/evaluate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code, language, systemPrompt }),
+        body: JSON.stringify({ code, language, systemPrompt, challengeId }),
       });
 
       if (!response.ok) {

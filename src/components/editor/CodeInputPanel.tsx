@@ -42,7 +42,7 @@ The code should ${activeChallenge.description}
 
 Please evaluate if the code correctly solves this challenge and provide clear feedback.`;
 
-      const result = await EvaluationService.evaluate(code, language, systemPrompt);
+      const result = await EvaluationService.evaluate(code, language, systemPrompt, activeChallenge.id);
       addResult(result);
 
       if (result.status === 'success') {
@@ -57,6 +57,14 @@ Please evaluate if the code correctly solves this challenge and provide clear fe
         } catch (error) {
           console.error('Error awarding points:', error);
         }
+      } else if (result.status === 'warning') {
+        toast({
+          title: 'Challenge already completed',
+          description: 'You have already successfully completed this challenge',
+          status: 'warning',
+          duration: 5000,
+          isClosable: true,
+        });
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Evaluation failed');

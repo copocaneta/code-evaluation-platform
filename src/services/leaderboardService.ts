@@ -15,7 +15,14 @@ export interface LeaderboardEntry {
   avatarUrl?: string;
 }
 
-const supabase = createClient<{ leaderboard: LeaderboardRow }>(
+// New interface for completed challenges
+export interface CompletedChallenge {
+  user_id: string;
+  challenge_id: string;
+  completed_at: string;
+}
+
+const supabase = createClient<{ leaderboard: LeaderboardRow, completed_challenges: CompletedChallenge }>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
@@ -69,5 +76,34 @@ export class LeaderboardService {
       points: row.points,
       avatarUrl: row.avatar_url
     }));
+  }
+
+  // New function to mark a challenge as completed
+  static async markChallengeCompleted(userId: string, challengeId: string): Promise<void> {
+    const { error } = await supabase
+      .from('completed_challenges')
+      .upsert({
+        user_id: userId,
+        challenge_id: challengeId,
+        completed_at: new Date().toISOString()
+      });
+
+    if (error) throw error;
+  }
+
+  // New function to check if a challenge has been completed
+  static async hasCompletedChallenge(userId: string, challengeId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .from('completed_challenges')
+      .select('challenge_id')
+      .eq('user_id', userId)
+      .eq('challenge_id', challengeId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 is "Not found" error code
+      throw error;
+    }
+
+    return !!data;
   }
 } 

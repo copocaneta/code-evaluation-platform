@@ -1,7 +1,7 @@
 import { EvaluationResult } from '../types/state';
 
 export class OpenAIService {
-  async evaluateCode(code: string, language: string, systemPrompt: string): Promise<EvaluationResult> {
+  async evaluateCode(code: string, language: string, systemPrompt: string, challengeId: string): Promise<EvaluationResult> {
     try {
       const baseUrl = typeof window !== 'undefined' 
         ? window.location.origin 
@@ -16,6 +16,7 @@ export class OpenAIService {
           code,
           language,
           systemPrompt,
+          challengeId,
         }),
       });
 
