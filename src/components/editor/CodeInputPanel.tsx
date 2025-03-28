@@ -120,6 +120,10 @@ Remember: The goal is to help users learn by figuring out the solution themselve
             leftIcon={isLoading ? <LoadingSpinner size="sm" /> : undefined}
             _hover={{ transform: 'translateY(-1px)' }}
             _active={{ transform: 'translateY(0)' }}
+            size={{ base: "sm", md: "md" }}
+            px={{ base: 2, md: 4 }}
+            fontSize={{ base: "sm", md: "md" }}
+            minW={{ base: "70px", md: "auto" }}
           >
             Evaluate
           </Button>

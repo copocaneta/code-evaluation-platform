@@ -42,7 +42,10 @@ const Header = () => {
             />
           )}
           <Link href="/">
-            <Heading size="md" color="brand.500">
+            <Heading 
+              fontSize={{ base: "14px", sm: "16px", md: "20px" }}
+              color="brand.500"
+            >
               {process.env.NEXT_PUBLIC_APP_NAME}
             </Heading>
           </Link>
