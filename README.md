@@ -2,6 +2,8 @@
 
 A modern web application for coding challenges with real-time AI evaluation using GPT-4. Built with Next.js, TypeScript, and Chakra UI.
 
+![Demo of AI Code Evaluation Game](demo.gif)
+
 ## Features
 
 ### Core Functionality
@@ -35,9 +37,11 @@ A modern web application for coding challenges with real-time AI evaluation usin
 ## Getting Started
 
 ### Prerequisites
-- Node.js 16+
+- Node.js 16+ (18.x.x recommended)
 - npm or yarn
 - Azure OpenAI API key
+- Supabase account and project
+- Clerk account for authentication
 
 ### Installation
 
@@ -56,13 +60,60 @@ npm install
 yarn install
 ```
 
-3. Create a `.env.local` file:
+3. Create a `.env.local` file with all required variables:
 
 ```env
+# OpenAI Configuration
 OPENAI_API_KEY=your_azure_openai_api_key
+AZURE_OPENAI_ENDPOINT=https://your-endpoint.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT=deployment-name
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# Application Configuration
+NEXT_PUBLIC_APP_NAME="AI Code Evaluation Game"
+NODE_ENV=development
+
+# Rate Limiting Configuration
+RATE_LIMIT_CAPACITY=10
+RATE_LIMIT_REFILL_RATE=0.1
+RATE_LIMIT_REFILL_TIME=10
 ```
 
-4. Run the development server:
+4. Set up the database:
+
+```sql
+-- Create the leaderboard table
+CREATE TABLE leaderboard (
+  user_id TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  points INTEGER DEFAULT 0,
+  avatar_url TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create the completed_challenges table
+CREATE TABLE completed_challenges (
+  user_id TEXT,
+  challenge_id TEXT,
+  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  PRIMARY KEY (user_id, challenge_id)
+);
+
+-- Create indexes for better query performance
+CREATE INDEX idx_leaderboard_points ON leaderboard(points DESC);
+CREATE INDEX idx_completed_challenges_user ON completed_challenges(user_id);
+CREATE INDEX idx_completed_challenges_challenge ON completed_challenges(challenge_id);
+```
+
+5. Run the development server:
 
 ```bash
 npm run dev
@@ -70,7 +121,32 @@ npm run dev
 yarn dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Installation Troubleshooting
+
+#### Common Issues and Solutions
+
+1. **Node.js Version Conflicts**
+   - Use nvm to manage Node.js versions
+   - Ensure you're using Node.js 16+ (18.x.x recommended)
+   ```bash
+   nvm install 18
+   nvm use 18
+   ```
+
+2. **Supabase Connection Issues**
+   - Verify your Supabase project is active
+   - Check if the anon key has the correct permissions
+   - Ensure tables are created with proper schemas
+
+3. **Clerk Authentication Problems**
+   - Verify your Clerk application settings
+   - Check if redirect URLs are properly configured
+   - Ensure all required environment variables are set
+
+4. **OpenAI API Issues**
+   - Verify your API key is valid
+   - Check if you have sufficient API credits
+   - Ensure proper API version is specified
 
 ## Usage
 
@@ -93,6 +169,193 @@ yarn dev
    - View previous evaluations
    - Track your progress
    - Learn from feedback
+
+## System Architecture
+
+### Evaluation System
+
+#### JSON Structures
+
+1. **Evaluation Result**
+```typescript
+interface EvaluationResult {
+  id: string;          // Unique identifier for the evaluation
+  timestamp: string;   // When the evaluation was performed
+  status: 'success' | 'error' | 'warning';  // Evaluation outcome
+  content: string;     // Detailed feedback from AI
+}
+```
+
+2. **Challenge Completion**
+```typescript
+interface CompletedChallenge {
+  user_id: string;     // Clerk user ID
+  challenge_id: string; // Challenge identifier
+  completed_at: string; // Completion timestamp
+}
+```
+
+#### Evaluation Flow
+
+1. **Code Submission**
+   - User submits code through the editor
+   - System checks if challenge was already completed
+   - If not completed, proceeds with evaluation
+
+2. **AI Evaluation Process**
+   - Two-phase evaluation using GPT-4:
+     1. Detailed Analysis: Provides comprehensive feedback
+     2. Pass/Fail Check: Binary success determination
+   - Rate limiting: 3 requests per 10 seconds
+   - Evaluation criteria based on challenge requirements
+
+3. **Result Processing**
+   - Success: 
+     - Awards points
+     - Marks challenge as completed
+     - Updates leaderboard
+   - Failure: 
+     - Provides constructive feedback
+     - Allows retry
+   - Already Completed:
+     - Prevents resubmission
+     - Guides to next challenge
+
+### Scoring System
+
+1. **Points Structure**
+   - 10 points per successful challenge completion
+   - Points are awarded only once per challenge
+   - No partial points for attempts
+
+2. **Leaderboard System**
+```typescript
+interface LeaderboardEntry {
+  userId: string;      // User identifier
+  username: string;    // Display name
+  points: number;      // Total accumulated points
+  avatarUrl?: string;  // Optional avatar
+}
+```
+
+#### Leaderboard Features
+- Real-time point tracking
+- Top 100 users displayed
+- Points persist across sessions
+- Automatic updates on success
+
+### Database Schema
+
+#### Tables
+
+1. **leaderboard**
+```sql
+CREATE TABLE leaderboard (
+  user_id TEXT PRIMARY KEY,
+  username TEXT NOT NULL,
+  points INTEGER DEFAULT 0,
+  avatar_url TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE
+);
+```
+
+2. **completed_challenges**
+```sql
+CREATE TABLE completed_challenges (
+  user_id TEXT,
+  challenge_id TEXT,
+  completed_at TIMESTAMP WITH TIME ZONE,
+  PRIMARY KEY (user_id, challenge_id)
+);
+```
+
+### Authentication System
+- Clerk authentication integration
+- User session management
+- Secure user identification
+- Profile management
+
+### Rate Limiting
+- Token bucket algorithm implementation
+- 3 requests per 10 seconds per user
+- Automatic token refill
+- Graceful handling of limit exceeding
+
+## API Documentation
+
+### Endpoints
+
+1. **/api/evaluate**
+   - Method: POST
+   - Purpose: Evaluate submitted code
+   - Rate Limited: Yes (3 requests/10s)
+   ```typescript
+   // Request
+   {
+     code: string;
+     language: string;
+     challengeId: string;
+     systemPrompt: string;
+   }
+   
+   // Response
+   {
+     id: string;
+     timestamp: string;
+     status: 'success' | 'error' | 'warning';
+     content: string;
+   }
+   ```
+
+2. **/api/points**
+   - Method: POST
+   - Purpose: Award points for successful challenges
+   ```typescript
+   // Request
+   {
+     points: number;
+   }
+   
+   // Response
+   {
+     points: number; // Updated total points
+   }
+   ```
+
+### Error Codes
+- 400: Bad Request (Missing required fields)
+- 401: Unauthorized (Not authenticated)
+- 409: Conflict (Challenge already completed)
+- 429: Too Many Requests (Rate limit exceeded)
+- 500: Internal Server Error
+
+## Deployment
+
+### Vercel Deployment
+1. Fork the repository
+2. Create a new project in Vercel
+3. Connect to your GitHub repository
+4. Configure environment variables
+5. Deploy
+
+### Self-Hosted Deployment
+1. Build the application
+   ```bash
+   npm run build
+   ```
+2. Set up environment variables
+3. Configure reverse proxy (nginx recommended)
+4. Set up PM2 for process management
+   ```bash
+   pm2 start npm --name "ai-code-game" -- start
+   ```
+
+### Production Considerations
+- Enable error monitoring (e.g., Sentry)
+- Set up logging aggregation
+- Configure proper CORS settings
+- Implement backup strategy for database
+- Set up health checks
 
 ## Tech Stack
 
